@@ -19,7 +19,6 @@ namespace WindowsFormsApp1
         
         NetworkNeuron network = new NetworkNeuron(400);
         string[] lrnItems;
-        string imgName;
         string resultFilePath;
         string textResult;
         public Form1()
@@ -28,39 +27,9 @@ namespace WindowsFormsApp1
             string DIRECTORY_NAME = ConfigurationManager.AppSettings.Get("models");
             string LRN_DIRECTORY_NAME = ConfigurationManager.AppSettings.Get("learning");
             resultFilePath = ConfigurationManager.AppSettings.Get("results");
-           // listBox1.Items.AddRange(Directory.GetFiles(DIRECTORY_NAME));
-            //listBox1.SelectedIndex = 0;
-            dataGridView1.ColumnCount = 1;
             lrnItems = Directory.GetFiles(LRN_DIRECTORY_NAME);
-            dataGridView1.RowCount = lrnItems.Length;
-            CheckBox[]checkBoxes = new CheckBox[lrnItems.Length];
-            DataGridViewCheckBoxColumn dgvCmb = new DataGridViewCheckBoxColumn();
-            dgvCmb.ValueType = typeof(bool);
-            dgvCmb.Name = "Chk";
-            dgvCmb.HeaderText = @"Проверка";
-            dataGridView1.Columns.Add(dgvCmb);
-
-            for (var i = 0; i < lrnItems.Length; i++)
-            {
-                dataGridView1[0, i].Value = lrnItems[i];
-                dataGridView1[1, i].Value = CheckState.Checked;
-            }
-            dataGridView1.SelectionChanged += DataGridView1_SelectionChanged;
-            //listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
         }
 
-        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-           // pictureBox1.Load(listBox1.SelectedItem.ToString());
-           // imgName = listBox1.SelectedItem.ToString();
-        }
-
-        private void DataGridView1_SelectionChanged(object sender, EventArgs e)
-        {
-            var sel = dataGridView1.SelectedCells;
-            pictureBox1.Load(dataGridView1[0, sel[0].RowIndex].Value.ToString());
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -93,25 +62,13 @@ namespace WindowsFormsApp1
                 Bitmap bitmap = new Bitmap(lrnItems[i]);
                 bool tildaY = true;
                 if (lrnItems[i].Contains("go")) tildaY = false;
+                else if (lrnItems[i].Contains("wait")) tildaY = true;
                 if (network.GetResult(bitmap) != tildaY)
                 {
                     network.Layers[0].IncW();
                     i = -1;
                 }
             }
-
-            //for (int i = 0; i < lrnItems.Count(); i++)
-            //{
-            //    pictureBox1.Load(dataGridView1[0, i].Value.ToString());
-            //    Bitmap bitmap = pictureBox1.Image as Bitmap;
-            //    bool tildaY = true;
-            //    if (dataGridView1[1, i].Value.Equals(CheckState.Checked)) tildaY = false;
-            //    if (network.GetResult(bitmap) != tildaY)
-            //    {
-            //        network.Layers[0].IncW();
-            //        i = -1;
-            //    }
-            //}
             MessageBox.Show("Сеть успешно обучена");
         }
 
@@ -135,30 +92,9 @@ namespace WindowsFormsApp1
             }
         }
 
-        //private void button3_Click(object sender, EventArgs e)
-        //{
-        //    int[,] f;
-
-
-        //    openFileDialog1.Title = "Укажите вайл весов";
-        //    openFileDialog1.ShowDialog();
-        //    string fileName = openFileDialog1.FileName;
-        //    StreamReader stream = File.OpenText(fileName);
-        //    string line;
-        //    string[] s1;
-        //    int k = 0;
-        //    while ((line = stream.ReadLine()) != null)
-        //    {
-        //        s1 = line.Split(' ');
-        //        for(int i = 0; i < s1.Length; i++)
-        //        {
-        //            listBox2.Items.Add("");
-        //            if (k < 16)
-        //            {
-        //                //network.doIt(s1[i]);
-        //            }
-        //        }
-        //    }
-        //}
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(ConfigurationManager.AppSettings.Get("results"));
+        }
     }
 }
